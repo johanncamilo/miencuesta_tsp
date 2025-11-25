@@ -1,0 +1,130 @@
+@startuml miencuesta
+title Diagrama de Clases - Miencuesta Completo
+
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+'==========================
+'       ENTIDADES BASE
+'==========================
+
+class Empresa {
+    +id: Long
+    +nombre: String
+    +nit: String
+    +direccion: String
+    +telefono: String
+}
+
+class Usuario {
+    +id: Long
+    +nombre: String
+    +email: String
+    +passwordHash: String
+    +rol: RolUsuario
+    +estado: EstadoUsuario
+}
+
+enum RolUsuario {
+    CREADOR
+    ANALISTA
+}
+
+enum EstadoUsuario {
+    ACTIVO
+    INACTIVO
+}
+
+Empresa "1" o-- "*" Usuario : "personas autorizadas"
+
+'==========================
+'       ENCUESTAS
+'==========================
+
+class Encuesta {
+    +id: Long
+    +titulo: String
+    +descripcion: String
+    +fechaInicio: Date
+    +fechaFin: Date
+    +enlaceLargo: String
+    +enlaceCorto: String
+    +codigoQR: String
+    +estado: EstadoEncuesta
+    +duplicar(): Encuesta
+}
+
+enum EstadoEncuesta {
+    ACTIVA
+    INACTIVA
+    CERRADA
+}
+
+Empresa "1" o-- "*" Encuesta
+Usuario "1" --> "*" Encuesta : "creada por"
+
+class Pregunta {
+    +id: Long
+    +texto: String
+    +tipo: TipoPregunta
+    +obligatoria: Boolean
+}
+
+enum TipoPregunta {
+    ABIERTA
+    OPCION_MULTIPLE
+    OPCION_UNICA
+    ESCALA
+}
+
+Encuesta "1" o-- "*" Pregunta
+
+class RespuestaPosible {
+    +id: Long
+    +valor: String
+}
+
+Pregunta "1" o-- "*" RespuestaPosible : "opciones"
+
+'==========================
+'       RESPUESTAS
+'==========================
+
+class Respuesta {
+    +id: Long
+    +valor: String
+    +fecha: DateTime
+    +canal: CanalRespuesta
+}
+
+enum CanalRespuesta {
+    WEB
+    WHATSAPP
+}
+
+Encuesta "1" o-- "*" Respuesta
+Pregunta "1" o-- "*" Respuesta
+
+'==========================
+'       REPORTES
+'==========================
+
+class ReporteService {
+    +generarReporteXLS(encuestaId: Long)
+    +generarReportePDF(encuestaId: Long)
+    +filtrarPorEmpresa(empresaId: Long)
+}
+
+'==========================
+'       WHATSAPP
+'==========================
+
+class WhatsAppIntegrationService {
+    +recibirRespuesta()
+    +procesarMensaje()
+    +enviarEncuesta()
+}
+
+WhatsAppIntegrationService --> Respuesta : "crea"
+
+@enduml

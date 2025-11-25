@@ -1,0 +1,118 @@
+@startuml miencuesta
+title Diagrama de Clases - Miencuesta
+
+' Configuración de estilo
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+' --- ENUMERACIONES (ENUMS) ---
+enum EstadoUsuario {
+    ACTIVO
+    INACTIVO
+}
+
+enum RolUsuario {
+    CREADOR
+    ANALISTA
+}
+
+enum EstadoEncuesta {
+    ACTIVA
+    INACTIVA
+    CERRADA
+}
+
+enum TipoPregunta {
+    ABIERTA
+    OPCION_MULTIPLE
+    OPCION_UNICA
+    ESCALA
+}
+
+' --- CLASES (ENTIDADES) ---
+
+class Empresa {
+    - Long id
+    - String nombre
+    + List<Usuario> usuariosAutorizados
+    + List<Encuesta> encuestas
+}
+
+class Usuario {
+    - Long id
+    - String email
+    - String contraseña
+    - EstadoUsuario estado
+    - RolUsuario rol
+    - Empresa empresa
+}
+
+class Encuesta {
+    - Long id
+    - String titulo
+    - LocalDateTime validoDesde
+    - LocalDateTime validoHasta
+    - String enlaceLargo
+    - String enlaceCorto
+    - String urlCodigoQR
+    - Empresa empresa
+    - EstadoEncuesta estado
+    + List<Pregunta> preguntas
+    + List<RespuestaEncuesta> respuestas
+}
+
+class Pregunta {
+    - Long id
+    - String texto
+    - TipoPregunta tipo
+    - List<String> respuestasPosibles
+    - Encuesta encuesta
+}
+
+class RespuestaEncuesta {
+    - Long id
+    - LocalDateTime fechaEnvio
+    - String fuente
+    - Encuesta encuesta
+    + List<Respuesta> respuestas
+}
+
+class Respuesta {
+    - Long id
+    - String valor
+    - RespuestaEncuesta respuestaEncuesta
+    - Pregunta pregunta
+}
+
+' --- RELACIONES ---
+
+' Una Empresa tiene muchos Usuarios (1 a N)
+Empresa "1" -- "0..*" Usuario : tiene >
+
+' Una Empresa crea muchas Encuestas (1 a N)
+Empresa "1" -- "0..*" Encuesta : crea >
+
+' Un Usuario usa Enums (Dependencia)
+Usuario ..> EstadoUsuario
+Usuario ..> RolUsuario
+
+' COMPOSICIÓN: Una Encuesta "contiene" Preguntas
+' (Si borras la encuesta, se borran las preguntas)
+Encuesta "1" *-- "0..*" Pregunta : contiene >
+
+' Una Encuesta recibe muchas Respuestas recolectadas (1 a N)
+Encuesta "1" -- "0..*" RespuestaEncuesta : recibe >
+
+' Una Encuesta usa Enum EstadoEncuesta (Dependencia)
+Encuesta ..> EstadoEncuesta
+
+Pregunta ..> TipoPregunta
+
+' COMPOSICIÓN: Una Respuesta Encuesta "contiene" respuestas individuales
+' (Si borras el intento de encuesta, se borran sus respuestas)
+RespuestaEncuesta "1" *-- "1..*" Respuesta : compuesta por >
+
+' Una Respuesta individual referencia a qué Pregunta pertenece
+Respuesta "0..*" --> "1" Pregunta : responde a >
+
+@enduml

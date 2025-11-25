@@ -1,0 +1,65 @@
+# Carpetas Maven
+backend/target/
+backend/generated-sources/
+backend/generated-test-sources/
+
+# Archivos compilados
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Dependencias
+backend/.m2/
+backend/node_modules/
+frontend/node_modules/
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Ambiente
+.env
+.env.local
+.env.*.local
+
+# Base de datos
+*.db
+*.sqlite
+*.sqlite3
+
+# Frontend build
+frontend/dist/
+frontend/build/
+frontend/.next/
+frontend/out/
+
+# Miscelánea
+.gradle/
+build/
+*.pid
+*.seed
+*.pid.lock
