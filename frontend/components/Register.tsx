@@ -19,12 +19,14 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onNavigateToLogin }) =>
         setIsLoading(true);
 
         const payload = {
-            empresaId: 1,
-            rolId: 2,
-            nombre: name,
-            correo: email,
-            password: password
+            "empresaId": 1,
+            "rolId": 2,
+            "nombre": name,
+            "correo": email,
+            "password": password
         };
+
+        console.log('Register payload:', payload);
 
         fetch('http://localhost:8080/api/auth/register', {
             method: 'POST',

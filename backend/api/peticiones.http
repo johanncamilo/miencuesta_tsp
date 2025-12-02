@@ -1,0 +1,4 @@
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{"empresaId": 1, "rolId": 2, "nombre": "numerouno", "correo": "numerouno@gmail.com", "password": "1234"}
